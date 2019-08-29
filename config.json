@@ -1,0 +1,8 @@
+{
+    "max_record_time": 20,
+    "video_folder": "./videos/",
+    "time_in_between": 10,
+    "classifier": "Cascades/haarcascade_frontalface_default.xml",
+    "res_x": 640,
+    "res_y": 480
+}

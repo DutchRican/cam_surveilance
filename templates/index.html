@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pi surveilance</title>
+    <script>
+        function getNewStatus() {
+            var http = new XMLHttpRequest();
+            http.open("GET", '/camStatus');
+            http.send();
+
+            http.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status == 200) {
+                    document.getElementById('camStatus').innerHTML = http.responseText;
+                }
+            }
+        }
+        setInterval(getNewStatus, 3000); // checking the status every 3 secs
+    </script>
+</head>
+
+<body>
+    <h1>Your camera</h1>
+    <div style="display: flex">
+        <div style="display: inline">
+        <img src="{{ url_for('video_feed')}}" alt="video" height="240" width="320">
+        <p>Camera recording: <span id="camStatus">false</span></p>
+        </div>
+        <div style="display: inline">
+            <p>Available videos:</p>
+        </div>
+    </div>
+</body>
+
+</html>
