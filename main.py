@@ -1,6 +1,7 @@
 import threading
+import glob
 from camera import Camera
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, jsonify
 
 app = Flask(__name__)
 cam = None
@@ -40,6 +41,12 @@ def cam_status():
         return Response(str(cam.isRecording).lower())
     else:
         return Response('False')
+
+
+@app.route('/savedFiles')
+def saved_files():
+    files = glob.glob("./videos/*.avi")
+    return jsonify(files)
 
 
 if __name__ == '__main__':
