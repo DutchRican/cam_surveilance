@@ -24,7 +24,7 @@ Vue.component('Camera', {
             <div class="panel-heading">
                 <p>Camera:</p>
             </div>
-            <img class="media-object" src="feed" alt="video" height="240" width="320">
+            <img class="cam-feed media-object" src="feed" alt="video" height="320" width="426">
             <div class="panel-footer">
                 <p>Camera recording: <span id="camStatus">false</span></p>
             </div>
