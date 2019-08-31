@@ -14,8 +14,8 @@ class Camera():
         self.config = LoadConfig()
         self.frame_width = self.config['res_x']
         self.frame_height = self.config['res_y']
-        self.cap = PiVideoStream(resolution=(self.frame_width, self.frame_height)).start()
-        #self.cap = cv2.VideoCapture(0)
+        self.cap = PiVideoStream(resolution=(
+            self.frame_width, self.frame_height)).start()
         self.canRecord = True
         self.timeWithoutBody = 0
         self.startRecordingTime = 0
