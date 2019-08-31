@@ -7,12 +7,37 @@ Vue.component('pagebody', {
                 <div class="panel-heading">
                     <p>Available videos:</p>
                 </div>
+                <div class="panel-body">
+                    <ul id="file_list"></ul>
+                </div>
             </div>
         </div>
     </div>`,
     data() {
         return {
-            message: 'testing!!!'
+            test: 'sdfsd'
+        }
+    },
+    created() {
+        this.getStoredFiles();
+    },
+    methods: {
+        getStoredFiles() {
+            var http = new XMLHttpRequest();
+            http.responseType = 'json';
+            http.open("GET", "/savedFiles");
+            http.send();
+
+            http.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status == 200) {
+                    let ul = document.getElementById('file_list');
+                    http.response.forEach(el => {
+                        let li = document.createElement('li');
+                        li.appendChild(document.createTextNode(el));
+                        ul.appendChild(li);
+                    });
+                }
+            }
         }
     }
 });
@@ -41,7 +66,7 @@ Vue.component('Camera', {
 
             http.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status == 200) {
-                    document.getElementById('camStatus').innerHTML = http.responseText;
+                    document.getElementById('camStatus').innerHTML = http.responseText.toLowerCase();
                 }
             }
         }
