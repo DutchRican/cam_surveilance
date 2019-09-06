@@ -4,5 +4,7 @@
     "time_in_between": 10,
     "classifier": "Cascades/haarcascade_frontalface_default.xml",
     "res_x": 640,
-    "res_y": 480
+    "res_y": 480,
+    "flip_cam": false,
+    "camName": "primary-Cam"
 }

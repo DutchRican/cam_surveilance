@@ -2,29 +2,32 @@ import numpy as np
 import cv2
 import time
 from imutils.object_detection import non_max_suppression
-from imutils.video.pivideostream import PiVideoStream
+# from imutils.video.pivideostream import PiVideoStream
 from imutils import resize
 from libs.config import LoadConfig
 from libs.timeHelpers import GetMilliSecs, GetTimeStamp
 
 
 class Camera():
-    def __init__(self, flip=False):
-        self.flip = flip
+    def __init__(self, isWindows=False):
         self.config = LoadConfig()
+        self.flip = self.config['flip_cam']
         self.frame_width = self.config['res_x']
         self.frame_height = self.config['res_y']
-        self.cap = PiVideoStream(resolution=(
-            self.frame_width, self.frame_height)).start()
+        if isWindows:
+            self.cap = cv2.VideoCapture(0)
+            # getting width and height from the capture device
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.frame_width)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.frame_height)
+        else:
+            self.cap = PiVideoStream(resolution=(
+                self.frame_width, self.frame_height)).start()
         self.canRecord = True
         self.timeWithoutBody = 0
         self.startRecordingTime = 0
         self.pauseRecording = 0
-        self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
-
-        # getting width and height from the capture device
-        # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.frame_width)
-        # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.frame_height)
+        # self.fourcc = 0x00000021
+        self.fourcc = cv2.VideoWriter_fourcc(*'avc1')
 
         self.out = cv2.VideoWriter()
         self.maxRecordingTime = self.config['max_record_time']
@@ -33,7 +36,7 @@ class Camera():
         self.currentFrame = None
 
     def recording(self):
-        img = self.cap.read()
+        _, img = self.cap.read()
         if self.flip:
             img = cv2.flip(img, 0)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -58,8 +61,7 @@ class Camera():
                 print('starting recording')
                 self.startRecordingTime = GetMilliSecs()
                 self.pauseRecording = 0
-                filename = self.config['video_folder'] + \
-                    GetTimeStamp() + '.avi'
+                filename = self.config['video_folder'] + GetTimeStamp() + '.mp4'
                 res = self.out.open(filename,
                                     self.fourcc,
                                     20,

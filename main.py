@@ -1,22 +1,21 @@
 import threading
+import os
 import glob
+import json
 from camera import Camera
-from flask import Flask, render_template, Response, jsonify
+from flask import Flask, render_template, Response, jsonify, request, send_file
 
 app = Flask(__name__)
 cam = None
+isWindows = os.name == 'nt'
 
 
 def runCamera():
     global cam
-    cam = Camera(True)
+    cam = Camera(isWindows=isWindows)
+
     while True:
         cam.recording()
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 
 def gen(camera):
@@ -45,14 +44,28 @@ def cam_status():
 
 @app.route('/savedFiles')
 def saved_files():
-    files = glob.glob("./videos/*.avi")
+    files = glob.glob("./videos/*.mp4")
     return jsonify(files)
 
+
+@app.route('/stored')
+def get_file():
+    fileToGet = request.args.get('clip')
+    return send_file(fileToGet, attachment_filename="test.mp4")
+
+
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    if request.method == 'OPTIONS':
+        response.headers['Access-Control-Allow-Methods'] = 'GET'
+        headers = request.headers.get('Access-Control-Request-Headers')
+        if headers:
+            response.headers['Access-Control-Allow-Headers'] = headers
+    return response
+app.after_request(add_cors_headers)
 
 if __name__ == '__main__':
     t = threading.Thread(target=runCamera, args=())
     t.daemon = True
     t.start()
-    app.jinja_env.auto_reload = True
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.run(host='0.0.0.0', port=3000)
