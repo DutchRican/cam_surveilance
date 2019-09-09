@@ -2,19 +2,23 @@ import numpy as np
 import cv2
 import time
 from imutils.object_detection import non_max_suppression
-# from imutils.video.pivideostream import PiVideoStream
 from imutils import resize
-from libs.config import LoadConfig
 from libs.timeHelpers import GetMilliSecs, GetTimeStamp
+
+isLoadPiCam = True
+try:
+    from imutils.video.pivideostream import PiVideoStream
+except ImportError:
+    isLoadPiCam = False
 
 
 class Camera():
-    def __init__(self, isWindows=False):
-        self.config = LoadConfig()
+    def __init__(self, config={}):
+        self.config = config
         self.flip = self.config['flip_cam']
         self.frame_width = self.config['res_x']
         self.frame_height = self.config['res_y']
-        if isWindows:
+        if not isLoadPiCam:
             self.cap = cv2.VideoCapture(0)
             # getting width and height from the capture device
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.frame_width)
@@ -81,7 +85,7 @@ class Camera():
             self.canRecord = True
         self.currentFrame = img
 
-    def getFrame(self):
+    def get_frame(self):
         if self.currentFrame is None:
             _, self.currentFrame = self.cap.read()
         _, jpeg = cv2.imencode('.jpg', self.currentFrame)

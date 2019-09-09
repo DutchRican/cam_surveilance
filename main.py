@@ -4,6 +4,7 @@ import glob
 import json
 from camera import Camera
 from flask import Flask, render_template, Response, jsonify, request, send_file
+from libs.config import LoadConfig
 
 app = Flask(__name__)
 cam = None
@@ -12,7 +13,7 @@ isWindows = os.name == 'nt'
 
 def runCamera():
     global cam
-    cam = Camera(isWindows=isWindows)
+    cam = Camera(config=LoadConfig())
 
     while True:
         cam.recording()
@@ -20,7 +21,7 @@ def runCamera():
 
 def gen(camera):
     while True:
-        frame = cam.getFrame()
+        frame = cam.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
