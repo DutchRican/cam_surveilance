@@ -63,9 +63,11 @@ class Camera():
 
             if not self.out.isOpened() and self.canRecord:
                 print('starting recording')
-                self.startRecordingTime = GetMilliSecs()
+                self.startRecordingTime = GetMilliSecs(time.time())
                 self.pauseRecording = 0
-                filename = self.config['video_folder'] + GetTimeStamp() + '.mp4'
+                filename = self.config['video_folder'] +
+                GetTimeStamp(time) + '.mp4'
+
                 res = self.out.open(filename,
                                     self.fourcc,
                                     20,
@@ -73,15 +75,15 @@ class Camera():
         if self.out.isOpened():
             self.out.write(img)
             if (self.startRecordingTime +
-                    self.maxRecordingTime) < GetMilliSecs():
+                    self.maxRecordingTime) < GetMilliSecs(time.time()):
                 self.out.release()
                 self.canRecord = False
-                self.pauseRecording = GetMilliSecs()
+                self.pauseRecording = GetMilliSecs(time.time())
                 print('Stopped recording')
 
         if not self.canRecord and (self.pauseRecording +
                                    self.config['time_in_between'] <
-                                   GetMilliSecs()):
+                                   GetMilliSecs(time.time())):
             self.canRecord = True
         self.currentFrame = img
 
