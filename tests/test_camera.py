@@ -7,7 +7,7 @@ from ..libs.config import LoadConfig
 
 @pytest.fixture
 def cam(mocker):
-    mocker.patch.object(cv2, 'VideoCapture')  
+    mocker.patch.object(cv2, 'VideoCapture') 
     return Camera(config=LoadConfig())
 
 

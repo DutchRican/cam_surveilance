@@ -65,8 +65,8 @@ class Camera():
                 print('starting recording')
                 self.startRecordingTime = GetMilliSecs(time.time())
                 self.pauseRecording = 0
-                filename = self.config['video_folder'] +
-                GetTimeStamp(time) + '.mp4'
+                filename = self.config['video_folder'] + \
+                    GetTimeStamp(time) + '.mp4'
 
                 res = self.out.open(filename,
                                     self.fourcc,
