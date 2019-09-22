@@ -1,50 +1,58 @@
 <template>
-  <div class="col-md-6 col-sm-6 col-xs-6">
-    <div class="card">
-      <div class="card-header">
-        <p>Camera:</p>
-      </div>
-      <img
-        class="cam-feed media-object"
-        :src="stream"
-        alt="video"
-      />
-      <div class="card-footer">
-        <p v-if="isRecording">Camera is recording</p>
-        <p v-else>Currently not recording</p>
-      </div>
+  <div class="card">
+    <div class="card-header">
+      <p>Camera:</p>
+    </div>
+    <img class="cam-feed media-object" :src="stream_url" alt="video" />
+    <div class="card-footer">
+      <p v-if="isRecording">Camera is recording</p>
+      <p v-else>Currently not recording</p>
     </div>
   </div>
 </template>
 
 <script>
-import { fetcher, serverUrl } from '../logic/fetchWrapper';
+import axios from "axios";
 
 export default {
-  name: 'Camera',
+  name: "Camera",
   created() {
-    setInterval(this.getCamStatus, 3000);
+    this.camCheckInterval = setInterval(this.getCamStatus, 3000);
   },
   data() {
     return {
       isRecording: false,
-    }
+      camCheckInterval: null
+    };
   },
-  props: ['stream'],
+  props: ["stream", "camera"],
   methods: {
     getCamStatus() {
-      fetcher('/camStatus')
-        .then(res => res.text())
-        .then(text => {
+      axios
+        .get(`http://${this.camera.host}:${this.camera.port}/camStatus`)
+        .then(result => {
           let wasRecording = this.isRecording;
-          this.isRecording = text === 'true';
+          this.isRecording = result.data === "true";
           if (wasRecording && !this.isRecording) {
-            this.$emit('refetchClips');
+            this.$emit("refetchClips");
           }
+        })
+        .catch(err => {
+          console.log("in the error");
+          clearInterval(this.camCheckInterval);
+          this.$emit("errorHandler", {
+            message: err.message,
+            type: "cam status error"
+          });
         });
     }
+  },
+  computed: {
+    stream_url() {
+      return `http://${this.camera.host}:${this.camera.port}${this.stream}`;
+    }
   }
-}
+};
 </script>
 <style scoped>
 img.cam-feed {
