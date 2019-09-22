@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-7">
+  <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="card">
       <div class="card-header">
         <p>Previous footage: {{clipName}}</p>
@@ -11,8 +11,6 @@
         controls
         preload="metadata"
         alt="video"
-        height="320"
-        width="426"
       />
     </div>
     <button class="btn btn-secondary go_back" v-on:click="backToFeed"><font-awesome-icon icon="arrow-left"/>Live</button>
@@ -34,6 +32,8 @@ export default {
 <style scoped>
 video {
   margin: 0 auto;
+  height: 100%;
+  width: 100%;
 }
 
 button.go_back {
@@ -41,5 +41,8 @@ button.go_back {
 }
 button.go_back > svg {
     margin: 0 5px 0 0;
+}
+.card-header > p, button {
+  font-size: 1.3vw;
 }
 </style>

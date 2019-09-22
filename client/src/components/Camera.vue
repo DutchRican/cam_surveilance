@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-7">
+  <div class="col-md-6 col-sm-6 col-xs-6">
     <div class="card">
       <div class="card-header">
         <p>Camera:</p>
@@ -8,8 +8,6 @@
         class="cam-feed media-object"
         :src="stream"
         alt="video"
-        height="320"
-        width="426"
       />
       <div class="card-footer">
         <p v-if="isRecording">Camera is recording</p>
@@ -38,7 +36,11 @@ export default {
       fetcher('/camStatus')
         .then(res => res.text())
         .then(text => {
+          let wasRecording = this.isRecording;
           this.isRecording = text === 'true';
+          if (wasRecording && !this.isRecording) {
+            this.$emit('refetchClips');
+          }
         });
     }
   }
@@ -47,5 +49,10 @@ export default {
 <style scoped>
 img.cam-feed {
   margin: 0 auto;
+  height: 100%;
+  width: 100%;
+}
+.card-footer {
+  font-size: 1.3vw;
 }
 </style>

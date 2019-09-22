@@ -40,7 +40,10 @@ class Camera():
         self.currentFrame = None
 
     def recording(self):
-        _, img = self.cap.read()
+        if isLoadPiCam is False:
+            _, img = self.cap.read()
+        else:
+            img = self.cap.read()
         if self.flip:
             img = cv2.flip(img, 0)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -89,10 +92,16 @@ class Camera():
 
     def get_frame(self):
         if self.currentFrame is None:
-            _, self.currentFrame = self.cap.read()
+            if isLoadPiCam is False:
+                _, self.currentFrame = self.cap.read()
+            else:
+                self.currentFrame = self.cap.read()
         _, jpeg = cv2.imencode('.jpg', self.currentFrame)
         return jpeg.tobytes()
 
     def __del__(self):
-        self.cap.release()
-        cv2.destroyAllWindows()
+        try:
+            self.cap.release()
+            cv2.destroyAllWindows()
+        except:
+            pass
