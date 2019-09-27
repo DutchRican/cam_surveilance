@@ -1,6 +1,6 @@
 <template>
     <div class="page-header text-center">
-        <h1>Your Cameras</h1>
+        <h1>Home Security</h1>
     </div>
 </template>
 

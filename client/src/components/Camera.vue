@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card cam_card">
     <div class="card-header">
       <p>Camera:</p>
     </div>
@@ -38,12 +38,8 @@ export default {
           }
         })
         .catch(err => {
-          console.log("in the error");
           clearInterval(this.camCheckInterval);
-          this.$emit("errorHandler", {
-            message: err.message,
-            type: "cam status error"
-          });
+          this.$bvToast.toast('Status check failed',{title: `${this.camera.name} can't be reached.`, variant: 'warning'});
         });
     }
   },
@@ -62,5 +58,9 @@ img.cam-feed {
 }
 .card-footer {
   font-size: 1.3vw;
+}
+
+.cam_card {
+  margin-bottom: 1.5em;
 }
 </style>

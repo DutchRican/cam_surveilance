@@ -1,5 +1,8 @@
 <template>
   <div class="card main_card">
+    <div class="card-header">
+      <p>Your Cameras:</p>
+    </div>
     <div class="card-body">
       <div class="row">
         <VideoPlayer
@@ -11,7 +14,7 @@
         <div
           class="col-md-6 col-sm-6 col-xs-6"
           v-else
-          v-for="camera in config"
+          v-for="camera in cameras"
           v-bind:key="camera.host"
         >
           <Camera :stream="liveFeed" :camera="camera" @errorHandler="setError"></Camera>
@@ -19,7 +22,6 @@
         </div>
       </div>
     </div>
-    <ToastError v-if="error" :type="error.type" :message="error.message" />
   </div>
 </template>
 
@@ -27,22 +29,23 @@
 import axios from "axios";
 import Camera from "./Camera.vue";
 import VideoPlayer from "./VideoPlayer";
-import ToastError from "./ToastError";
 
 export default {
   name: "CameraContainer",
   components: {
     Camera,
-    VideoPlayer,
-    ToastError
+    VideoPlayer
+  },
+  computed: {
+    cameras() {
+      return this.$store.state.config;
+    }
   },
   data() {
     return {
       liveFeed: `/feed`,
       selectedItem: null,
-      clipName: null,
-      error: null,
-      config: require("../../config/config.json")
+      clipName: null
     };
   },
   methods: {
@@ -50,7 +53,7 @@ export default {
       this.selectedItem = null;
     },
     setError(err) {
-      this.error = { type: err.type, message: err.message };
+     // this.error = { type: err.type, message: err.message };
     },
     setSource(e) {
       // let name = e.target.innerHTML;
@@ -66,7 +69,7 @@ export default {
 </script>
 <style scoped>
 div.main_card {
-  width: 48%;
+  flex: 3;
   font-size: 2vw;
 }
 </style>
