@@ -1,12 +1,11 @@
 <template>
   <div class="card cam_card">
     <div class="card-header">
-      <p>Camera:</p>
+      <p class="float-left">{{camera.name}}</p>
+      <p class="float-right">status: <font-awesome-icon icon="circle" :class="isRecording ? 'cam-icon' : ''"  size="xs" ></font-awesome-icon></p>
     </div>
     <img class="cam-feed media-object" :src="stream_url" alt="video" />
     <div class="card-footer">
-      <p v-if="isRecording">Camera is recording</p>
-      <p v-else>Currently not recording</p>
     </div>
   </div>
 </template>
@@ -22,7 +21,8 @@ export default {
   data() {
     return {
       isRecording: false,
-      camCheckInterval: null
+      camCheckInterval: null,
+      isDown: false
     };
   },
   props: ["stream", "camera"],
@@ -32,12 +32,12 @@ export default {
         .get(`http://${this.camera.host}:${this.camera.port}/camStatus`)
         .then(result => {
           let wasRecording = this.isRecording;
-          this.isRecording = result.data === "true";
+          this.isRecording = result.data;
           if (wasRecording && !this.isRecording) {
-            this.$emit("refetchClips");
+            this.$store.dispatch('refreshFiles', this.$bvToast);
           }
         })
-        .catch(err => {
+        .catch(() => {
           clearInterval(this.camCheckInterval);
           this.$bvToast.toast('Status check failed',{title: `${this.camera.name} can't be reached.`, variant: 'warning'});
         });
@@ -58,6 +58,10 @@ img.cam-feed {
 }
 .card-footer {
   font-size: 1.3vw;
+}
+
+.cam-icon {
+  color: red;
 }
 
 .cam_card {

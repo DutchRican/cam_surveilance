@@ -4,8 +4,12 @@
       <p>Available videos:</p>
     </div>
     <div class="card-body">
-      <ul v-if="storedItems.length" id="file_list">
-        <li v-for="(item, index) in storedItems" v-bind:key="index" v-on:click="setSource">{{item}}</li>
+      <ul v-if="$store.state.files.length" id="file_list">
+        <li
+          v-for="(item, index) in $store.state.files"
+          v-bind:key="index"
+          v-on:click="$store.dispatch('loadVideo', item)"
+        >{{item.label}}</li>
       </ul>
       <p v-else>No videos recorded yet</p>
     </div>
@@ -13,36 +17,10 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "FileContainer",
   created() {
-      this.getStoredFiles();
-  },
-  methods: {
-    getStoredFiles() {
-      const currentFiles = [];
-      for (let cam of this.cameras) {
-        axios
-          .get(`http://${cam.host}:${cam.port}/savedFiles`)
-          .then(res => [...currentFiles, ...res.data])
-          .catch(err =>
-            this.$bvToast.toast("Fetching files failed", {
-              title: `${cam.name} can't be reached.`,
-              variant: "warning"
-            })
-          );
-      }
-      this.storedItems = currentFiles;
-      // fetcher("/savedFiles")
-      //   .then(res => res.json())
-      //   .then(resJson => {
-      //     this.storedItems = resJson;
-      //   })
-      //   .catch(
-      //     err => (this.error = { type: "stored Files", message: err.message })
-      //   ); // just ignoring the error for now.
-    }
+    this.$store.dispatch('refreshFiles', this.$bvToast);
   },
   data() {
     return {

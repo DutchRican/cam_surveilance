@@ -6,9 +6,9 @@
     <div class="card-body">
       <div class="row">
         <VideoPlayer
-          v-if="selectedItem"
-          :video="selectedItem"
-          :clipName="clipName"
+          v-if="!isLiveFeed"
+          :video="$store.state.videoItem.url"
+          :clipName="videoItem.label"
           @backToLiveFeed="clearSelectedItem"
         ></VideoPlayer>
         <div
@@ -17,8 +17,7 @@
           v-for="camera in cameras"
           v-bind:key="camera.host"
         >
-          <Camera :stream="liveFeed" :camera="camera" @errorHandler="setError"></Camera>
-          <!-- @refetchClips="getStoredFiles"  -->
+          <Camera :stream="liveFeed" :camera="camera"></Camera>
         </div>
       </div>
     </div>
@@ -26,7 +25,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Camera from "./Camera.vue";
 import VideoPlayer from "./VideoPlayer";
 
@@ -39,30 +37,23 @@ export default {
   computed: {
     cameras() {
       return this.$store.state.config;
+    },
+    isLiveFeed() {
+      return this.$store.state.isLiveFeed;
+    },
+    videoItem() {
+      return this.$store.state.videoItem
     }
   },
   data() {
     return {
       liveFeed: `/feed`,
-      selectedItem: null,
       clipName: null
     };
   },
   methods: {
     clearSelectedItem() {
-      this.selectedItem = null;
-    },
-    setError(err) {
-     // this.error = { type: err.type, message: err.message };
-    },
-    setSource(e) {
-      // let name = e.target.innerHTML;
-      // fetcher(`/stored?clip=${name}`)
-      //   .then(res => res.blob())
-      //   .then(blob => {
-      //     this.selectedItem = URL.createObjectURL(blob);
-      //     this.clipName = name;
-      //   });
+      this.$store.dispatch('clearVideo');
     }
   }
 };
