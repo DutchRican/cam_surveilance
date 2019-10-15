@@ -16,5 +16,6 @@
 
 ## Run the front-end
 `cd client
+
 npm run serve`
 
