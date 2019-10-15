@@ -11,7 +11,10 @@
 ## Install the dependencies
 `pip install -r requirements.txt`
 
-## Run it and see it run
+## Run the camera
 `python main.py`
 
+## Run the front-end
+`cd client
+npm run serve`
 
