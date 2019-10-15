@@ -15,7 +15,7 @@
 `python main.py`
 
 ## Run the front-end
-`cd client
+`cd client`
 
-npm run serve`
+`npm run serve`
 
