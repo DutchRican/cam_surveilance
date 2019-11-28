@@ -61,6 +61,6 @@ export default {
 <style scoped>
 div.main_card {
   flex: 3;
-  font-size: 2vw;
+  font-size: 1.3vw;
 }
 </style>
