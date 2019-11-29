@@ -3,12 +3,12 @@ import App from './App.vue';
 import store from './store/store';
 import BootstrapVue from 'bootstrap-vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faArrowLeft, faCircle, faSpinner,faCheckCircle, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCircle, faSpinner,faCheckCircle, faDownload, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-library.add(faArrowLeft, faCircle, faSpinner, faCheckCircle, faDownload);
+library.add(faArrowLeft, faCircle, faSpinner, faCheckCircle, faDownload, faTrashAlt);
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);

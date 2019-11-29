@@ -27,6 +27,12 @@ export default new Vuex.Store({
             state.videoItem = undefined;
             state.isLiveFeed = true;
         },
+        deleteVideo(state, item, toast){
+          axios.get(`${item.host}/delete?clip=${item.label}`)
+          .then(() => toast.toast(`deleted file ${item.label}`, {title: 'deleted succesfully', variant: 'success'}))
+          .catch((e) => 
+          toast.toast(e, {title: 'broke shit', variant: 'warning'}));
+        },
         refreshFiles(state, toast) {
                 state.files = [];
                 for (let cam of state.config) {
@@ -38,6 +44,7 @@ export default new Vuex.Store({
                         const parts = item.match(/[\d-_]+\.mp4$/)
                         return {
                         url: `${baseUrl}/stored?clip=${item}`,
+                        host: baseUrl,
                         label: item,
                         name: parts ? parts[0] : ''
                         }
@@ -63,6 +70,10 @@ export default new Vuex.Store({
         },
         clearVideo(context) {
             context.commit('clearVideo');
+        },
+        deleteVideo(context, item, toast) {
+          context.commit('deleteVideo', item, toast);
+          context.commit('refreshFiles', toast);
         },
         refreshFiles(context, toast) {
             context.commit('refreshFiles', toast);

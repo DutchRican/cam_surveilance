@@ -8,11 +8,11 @@
         <li class="file-list-item" v-for="(item, index) in $store.state.files" v-bind:key="index">
           <p class="list-item-name" v-on:click="$store.dispatch('loadVideo', item)">{{item.label}}</p>
           <font-awesome-icon
-            target="_blank"
             class="download-icon"
             icon="download"
             v-on:click="downloadWithAxios(item)"
           ></font-awesome-icon>
+          <font-awesome-icon icon="trash-alt" class="download-icon" v-on:click="$store.dispatch('deleteVideo', item, $bvToast)"></font-awesome-icon>
         </li>
       </ul>
       <p v-else>No videos recorded yet</p>
