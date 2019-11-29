@@ -2,6 +2,7 @@ import threading
 import os
 import glob
 import json
+from os import path
 from camera import Camera
 from flask import Flask, render_template, Response, jsonify, request, send_file
 from libs.config import LoadConfig
@@ -53,6 +54,15 @@ def saved_files():
 def get_file():
     fileToGet = request.args.get('clip')
     return send_file(fileToGet, attachment_filename="test.mp4")
+
+@app.route('/delete')
+def delete_file():
+    fileToDelete = request.args.get('clip')
+    if path.exists(fileToDelete):
+        os.remove(fileToDelete)
+        return Response('deleted: ' + fileToDelete)
+    else:
+        return Response('File not found: ' + fileToDelete)
 
 
 def add_cors_headers(response):

@@ -34,10 +34,14 @@ export default new Vuex.Store({
                   axios
                     .get(`${baseUrl}/savedFiles`)
                     .then(res => {
-                      const items = res.data.map(item => ({
+                      const items = res.data.map(item => {
+                        const parts = item.match(/[\d-_]+\.mp4$/)
+                        return {
                         url: `${baseUrl}/stored?clip=${item}`,
-                        label: item
-                      }));
+                        label: item,
+                        name: parts ? parts[0] : ''
+                        }
+                      });
                       state.files = [...state.files, ...items];
                     })
                     .catch(() =>
