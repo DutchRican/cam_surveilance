@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="container-fluid">
+  <div id="app" class="container-fluid" v-bind:class="{'modal-open': $store.state.isShowSettings}">
     <Header />
-    <div style="display: flex;">
+    <div style="display: flex; margin-top: 2em;">
       <CameraContainer />
       <FileContainer />
     </div>

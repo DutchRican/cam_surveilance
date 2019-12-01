@@ -24,7 +24,7 @@ export default {
   props: ['video','clipName'],
   methods: {
       backToFeed() {
-          this.$emit('backToLiveFeed')
+          this.$emit('backToLiveFeed');
       }
   }
 }

@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     cameras() {
-      return this.$store.state.config;
+      return this.$store.state.config.cameras;
     },
     isLiveFeed() {
       return this.$store.state.isLiveFeed;

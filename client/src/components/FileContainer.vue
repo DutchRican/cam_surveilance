@@ -29,8 +29,7 @@ export default {
   },
   data() {
     return {
-      storedItems: [],
-      cameras: this.$store.state.config
+      storedItems: []
     };
   },
   methods: {
