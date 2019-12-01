@@ -12,7 +12,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        config: {cameras: []},
+        config: { cameras: [] },
         isLiveFeed: true,
         videoItem: undefined,
         shouldRefresh: false,
@@ -25,16 +25,37 @@ export default new Vuex.Store({
     mutations: {
         loadConfig(state, config) {
             axios.get('http://localhost:3000/config/cameras')
-            .then(res => {
-                state.config = {...state.config, cameras: res.data.cameras || []};
-            }).catch(err => {
-                console.log(err);
-            });
+                .then(res => {
+                    state.config = { ...state.config, cameras: res.data.cameras || [] };
+                }).catch(err => {
+                    console.log(err);
+                });
         },
-        saveConfig(state, cameras) {
-            // TODO write real logic for the update!
-            axios.put('http://localhost:3000/config/cameras/1', {host: 'test', port: 123, name: 'new'}).then(res => console.log(res.data)).catch(err => console.log(err));
-            state.config = {...state.config, cameras};
+        saveConfig(state, {toUpdate, toRemove, toast}) {
+            for (let cam in toUpdate) {
+                if (!idsRemoving.includes(parseInt(cam))) {
+                    axios.put(`http://localhost:3000/config/cameras/${cam}`, cameras[cam])
+                        .then(res => {
+                            const cameras = [...state.config.cameras];
+                            const index = cameras.findIndex(el => el.camera_id === res.data.camera_id);
+                            cameras[index] = res.data;
+                            state.config.cameras = [...cameras];
+                        }).catch((err) => toast.toast(`Saving the config failed for id: ${cam}`, {
+                            title: `camera id: ${cam} could not be saved`,
+                            variant: "warning"
+                        }));
+                }
+            }
+            for (let id in toRemove) {
+                axios.delete(`http://localhost:3000/config/remove/camera/${toRemove[id]}`)
+                .then(res => {
+                    const cameras = [...state.config.cameras].filter(cam => cam.camera_id !== id);
+                    state.config.cameras = [...cameras];
+                }).catch(err => toast.toast(`Deleting camera id: ${id} failed`, {
+                    title: `camera id: ${cam} could not be deleted`,
+                    variant: "warning"
+                }));
+            };
         },
         loadVideo(state, item) {
             state.videoItem = item;
@@ -85,8 +106,8 @@ export default new Vuex.Store({
             const config = require("../../config/config.json");
             context.commit('loadConfig', config);
         },
-        saveConfig(context, cameras) {
-            context.commit('saveConfig', cameras);
+        saveConfig(context, {toUpdate, toRemove, toast}) {
+            context.commit('saveConfig', {toUpdate, toRemove, toast});
             context.commit('toggleSettings');
         },
         loadVideo(context, item) {

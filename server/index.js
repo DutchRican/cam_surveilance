@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3');
 
 const port = 3000;
 
-const db = new sqlite3.Database(path.join(__dirname, '/../client/data/config.db'), err => {
+const db = new sqlite3.Database(path.join(__dirname, '/data/config.db'), err => {
     if (err) throw err;
 });
 
@@ -13,7 +13,12 @@ const db = new sqlite3.Database(path.join(__dirname, '/../client/data/config.db'
 // Serve all the files in '/dist' directory
 app.use(express.static(path.join(__dirname, '/../client/dist')));
 app.use(express.json());
-
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE');
+    next();
+});
 // Handle a get request to an api route
 app.get('/config/cameras', (req, res) => {
     db && db.serialize(() => {
@@ -38,8 +43,25 @@ app.put('/config/cameras/:id', (req, res) => {
     WHERE camera_id = ?`;
     const params = [host, name, port, parseInt(req.params.id)]
     db && db.run(query, params, (err, result) => {
-        if (err) { res.status(400).json({ error: err }); } else {
-            res.json({ data: result });
+        if (err) {
+            res.status(400).json({ error: err });
+        }
+        else {
+            res.json({ host, name, port, camera_id: parseInt(req.params.id) });
+        }
+    });
+});
+
+app.delete('/config/remove/camera/:id', (req, res) => {
+    const query = `DELETE from cameras
+    WHERE camera_id = ?`;
+    const params = [parseInt(req.params.id)];
+    db && db.run(query, params, (err, result) => {
+        if (err) {
+            res.status(400).json({ error: err });
+        }
+        else {
+            res.json({message: 'deleted', changes: this.changes });
         }
     });
 });
