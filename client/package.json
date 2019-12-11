@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "serve-react": "react-scripts start",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -16,6 +17,8 @@
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.1.0",
     "core-js": "^3.4.8",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "sqlite": "^3.0.3",
     "vue": "^2.6.10",
     "vuex": "^3.1.2"
@@ -29,8 +32,8 @@
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.9.0",
-    "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "react-scripts": "^3.3.0",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
@@ -40,7 +43,8 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "react-app"
     ],
     "rules": {},
     "parserOptions": {
